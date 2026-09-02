@@ -1,0 +1,64 @@
+"use client";
+
+import { formatNumber } from "@/lib/format";
+import { useLanguage, type TranslationKey } from "@/lib/i18n";
+
+export type AdminTabId = "overview" | "requests" | "idle" | "pipeline";
+
+interface AdminTabDef {
+  id: AdminTabId;
+  labelKey: TranslationKey;
+}
+
+const ADMIN_TABS: AdminTabDef[] = [
+  { id: "overview", labelKey: "tabOverview" },
+  { id: "requests", labelKey: "tabRequests" },
+  { id: "idle", labelKey: "tabIdleInventory" },
+  { id: "pipeline", labelKey: "tabPipeline" },
+];
+
+// The dashboard's workspace nav. Plain flex-row + logical CSS (inset-x-0
+// for the active underline, the browser's own dir-aware row ordering) —
+// no manual RTL branching needed, the same convention the rest of the
+// app relies on via dir="rtl"/"ltr" on <html>.
+export function AdminTabNav({
+  active,
+  onChange,
+  requestsBadgeCount,
+}: {
+  active: AdminTabId;
+  onChange: (tab: AdminTabId) => void;
+  requestsBadgeCount: number;
+}) {
+  const { t } = useLanguage();
+
+  return (
+    <nav role="tablist" className="flex gap-1 overflow-x-auto border-b border-hairline">
+      {ADMIN_TABS.map((tab) => {
+        const isActive = tab.id === active;
+        const badgeCount = tab.id === "requests" ? requestsBadgeCount : 0;
+
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onChange(tab.id)}
+            className={`relative flex shrink-0 items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
+              isActive ? "text-primary" : "text-muted hover:text-foreground"
+            }`}
+          >
+            {t(tab.labelKey)}
+            {badgeCount > 0 && (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-semibold text-background">
+                {formatNumber(badgeCount)}
+              </span>
+            )}
+            {isActive && <span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-primary" />}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}

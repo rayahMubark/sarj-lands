@@ -1,0 +1,49 @@
+inquiry_id,date,investor_name,phone,wants_to,land_type_wanted,area_of_city_wanted,prefers,budget_sar,budget_basis,intent,channel,status
+INQ-027,2026-08-08,Abdullah Al-Subaie,0579864169,open a car showroom,commercial,East,sale,53418000,total purchase,ready to move,phone call,negotiating
+INQ-033,2026-08-07,Fahad Al-Shammari,0577146576,open a warehouse,commercial,South,sale,16391000,total purchase,ready to move,phone call,contacted
+INQ-015,2026-08-07,Maha Al-Qahtani,0576017026,build a family home,residential,North,sale,8039000,total purchase,comparing options,phone call,new
+INQ-009,2026-08-06,Maha Al-Mutairi,0563377048,open a car showroom,commercial,Central,sale,5674000,total purchase,exploring,phone call,new
+INQ-004,2026-08-06,Bandar Al-Harbi,0587520040,open a warehouse,commercial,North,lease,554000,annual rent,ready to move,phone call,contacted
+INQ-047,2026-08-01,Reem Al-Shammari,0553335791,build a residential compound,residential,East,sale,1886000,total purchase,comparing options,whatsapp,contacted
+INQ-039,2026-08-01,Majed Al-Mutairi,0576246787,build apartments to rent,residential,South,sale,5690000,total purchase,ready to move,walk-in,negotiating
+INQ-012,2026-07-29,Maha Al-Anazi,0596069596,open an office building,commercial,South,lease,992000,annual rent,comparing options,walk-in,contacted
+INQ-022,2026-07-28,Hessa Al-Rashid,0586443787,build a family home,residential,South,sale,6644000,total purchase,ready to move,whatsapp,new
+INQ-016,2026-07-28,Nasser Al-Ghamdi,0552497267,build villas to sell,residential,South,sale,4469000,total purchase,ready to move,website form,new
+INQ-005,2026-07-28,Turki Al-Rashid,0540602702,open a warehouse,commercial,North,sale,2935000,total purchase,ready to move,phone call,contacted
+INQ-036,2026-07-25,Sultan Al-Rashid,0575965038,build a residential compound,residential,South,lease,421000,annual rent,comparing options,website form,new
+INQ-044,2026-07-19,Nasser Al-Rashid,0599091404,open a showroom,commercial,South,lease,1211000,annual rent,exploring,phone call,new
+INQ-018,2026-07-19,Sara Al-Harbi,0546446325,build a residential compound,residential,East,lease,451000,annual rent,comparing options,website form,negotiating
+INQ-048,2026-07-15,Dana Al-Qahtani,0596357219,build a family home,residential,West,sale,4152000,total purchase,comparing options,website form,contacted
+INQ-008,2026-07-15,Faisal Al-Mutairi,0578892752,open an office building,commercial,North,lease,493000,annual rent,ready to move,whatsapp,negotiating
+INQ-031,2026-07-14,Bandar Al-Qahtani,0562333770,open a showroom,commercial,South,lease,1685000,annual rent,ready to move,phone call,new
+INQ-002,2026-07-14,Noura Al-Ghamdi,0558031609,open a showroom,commercial,North,lease,600000,annual rent,comparing options,walk-in,contacted
+INQ-040,2026-07-10,Mohammed Al-Dossari,0592751343,open a warehouse,commercial,East,sale,59262000,total purchase,ready to move,website form,negotiating
+INQ-029,2026-07-10,Faisal Al-Harbi,0576153275,open a warehouse,commercial,Central,sale,2653000,total purchase,comparing options,walk-in,new
+INQ-043,2026-07-09,Nasser Al-Rashid,0534985488,build a residential compound,residential,West,sale,2547000,total purchase,comparing options,whatsapp,contacted
+INQ-034,2026-07-07,Hessa Al-Anazi,0550430467,build a residential compound,residential,Central,sale,4279000,total purchase,comparing options,website form,contacted
+INQ-045,2026-07-05,Mohammed Al-Harbi,0585183845,build a family home,residential,South,sale,5893000,total purchase,exploring,walk-in,new
+INQ-003,2026-07-05,Khalid Al-Qahtani,0596918745,open an office building,commercial,North,sale,5239000,total purchase,exploring,website form,new
+INQ-032,2026-07-03,Lama Al-Subaie,0531326693,open an office building,commercial,East,sale,94813000,total purchase,ready to move,whatsapp,new
+INQ-041,2026-07-01,Nasser Al-Mutairi,0594109066,open a retail store,commercial,South,lease,1201000,annual rent,comparing options,website form,new
+INQ-042,2026-06-29,Fahad Al-Harbi,0548822459,open a warehouse,commercial,East,sale,75019000,total purchase,comparing options,whatsapp,new
+INQ-026,2026-06-29,Abdullah Al-Qahtani,0578020568,build a family home,residential,West,lease,26000,annual rent,exploring,walk-in,negotiating
+INQ-001,2026-06-29,Maha Al-Mutairi,0598130959,open a warehouse,commercial,North,sale,3729000,total purchase,ready to move,whatsapp,new
+INQ-046,2026-06-28,Sultan Al-Harbi,0559118367,build apartments to rent,residential,West,sale,3811000,total purchase,exploring,phone call,new
+INQ-021,2026-06-27,Bandar Al-Shammari,0595698796,open a retail store,commercial,Central,sale,3318000,total purchase,exploring,whatsapp,negotiating
+INQ-013,2026-06-26,Maha Al-Anazi,0575323196,build apartments to rent,residential,Central,sale,2833000,total purchase,ready to move,walk-in,new
+INQ-023,2026-06-17,Maha Al-Harbi,0533658032,build a residential compound,residential,Central,sale,2634000,total purchase,comparing options,walk-in,contacted
+INQ-035,2026-06-13,Noura Al-Qahtani,0592430445,build a residential compound,residential,North,sale,4094000,total purchase,ready to move,phone call,new
+INQ-028,2026-06-13,Majed Al-Qahtani,0598151725,open a car showroom,commercial,South,lease,1070000,annual rent,comparing options,walk-in,contacted
+INQ-017,2026-06-13,Saud Al-Ghamdi,0579125387,build villas to sell,residential,West,sale,970000,total purchase,comparing options,phone call,new
+INQ-010,2026-06-11,Khalid Al-Ghamdi,0561059860,open a car showroom,commercial,East,sale,51641000,total purchase,ready to move,walk-in,negotiating
+INQ-030,2026-06-08,Reem Al-Rashid,0564970123,open a warehouse,commercial,South,lease,489000,annual rent,comparing options,phone call,new
+INQ-020,2026-06-08,Faisal Al-Rashid,0575133966,build a family home,residential,West,lease,25000,annual rent,comparing options,whatsapp,contacted
+INQ-006,2026-06-08,Omar Al-Shammari,0546538749,open a car showroom,commercial,North,lease,356000,annual rent,comparing options,phone call,new
+INQ-007,2026-06-06,Lama Al-Shammari,0561704487,open a retail store,commercial,North,sale,5938000,total purchase,comparing options,walk-in,new
+INQ-019,2026-06-04,Abdullah Al-Rashid,0586393822,build apartments to rent,residential,South,lease,307000,annual rent,ready to move,phone call,negotiating
+INQ-024,2026-06-03,Lama Al-Shammari,0546312555,open a car showroom,commercial,South,lease,1447000,annual rent,comparing options,phone call,new
+INQ-014,2026-05-31,Majed Al-Qahtani,0547828568,build a residential compound,residential,East,sale,1294000,total purchase,comparing options,phone call,new
+INQ-037,2026-05-29,Nasser Al-Otaibi,0592174527,build apartments to rent,residential,West,sale,3931000,total purchase,comparing options,whatsapp,new
+INQ-025,2026-05-29,Lama Al-Shammari,0531455398,open a warehouse,commercial,South,lease,2050000,annual rent,exploring,walk-in,contacted
+INQ-011,2026-05-26,Reem Al-Qahtani,0571158459,open a retail store,commercial,South,sale,8953000,total purchase,exploring,walk-in,contacted
+INQ-038,2026-05-24,Majed Al-Harbi,0576363918,open a car showroom,commercial,Central,sale,3422000,total purchase,ready to move,phone call,contacted

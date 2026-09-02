@@ -1,0 +1,121 @@
+parcel_id,district_en,district_ar,area_of_city,land_type,listing_type,price_basis,area_sqm,price_per_sqm_sar,total_price_sar,street_width_m,status,listed_date,days_on_market,lat,lng
+SRE-001,Al Khalidiyah,الخالدية,Central,commercial,lease,annual rent,826,320,264000,36,leased,2026-07-24,18,24.61696,46.755955
+SRE-002,Al Rabwah,الربوة,Central,residential,sale,asking price,440,5000,2200000,15,sold,2026-04-27,106,24.679728,46.767465
+SRE-003,Al Sinaiyah,الصناعية,Central,commercial,sale,asking price,587,4600,2700000,15,available,2026-05-11,92,24.639135,46.743645
+SRE-004,Al Oud,العود,Central,residential,sale,asking price,300,2500,750000,10,available,2026-02-03,189,24.621245,46.732699
+SRE-005,Al Farouq,الفاروق,Central,residential,sale,asking price,600,3600,2160000,12,available,2026-07-16,26,24.654548,46.786911
+SRE-006,Al Futah,الفوطة,Central,residential,sale,asking price,1489,5375,8003000,12,sold,2026-06-07,65,24.639875,46.70683
+SRE-007,Al Faisaliyah,الفيصلية,Central,residential,lease,annual rent,683,265,181000,20,leased,2026-07-10,32,24.628219,46.786271
+SRE-008,Al Murabba,المربع,Central,residential,lease,annual rent,500,180,90000,30,reserved,2026-05-09,94,24.656181,46.706959
+SRE-009,Jarir,جرير,Central,residential,sale,asking price,1250,3000,3750000,20,sold,2026-04-23,110,24.672542,46.750772
+SRE-010,Manfouhah,منفوحة,Central,residential,lease,annual rent,440,275,121000,15,leased,2026-06-03,69,24.596976,46.728891
+SRE-011,Al Janadriyah,الجنادرية,East,commercial,sale,asking price,2140,3300,7062000,40,sold,2026-07-16,26,24.913597,46.944692
+SRE-012,Al Janadriyah,الجنادرية,East,commercial,sale,asking price,1936,3300,6389000,40,sold,2026-07-18,24,24.913892,46.944956
+SRE-013,Al Hamra,الحمراء,East,residential,sale,asking price,1500,,,15,available,2026-07-14,28,24.77471,46.733958
+SRE-014,Al Khaleej,الخليج,East,residential,sale,asking price,375,3800,1425000,15,sold,2026-06-02,70,24.77259,46.79397
+SRE-015,Al Rimal,الرمال,East,commercial,sale,asking price,12128,4800,58214000,60,available,2026-04-05,128,24.852925,46.799836
+SRE-016,Al Rimal,الرمال,East,commercial,lease,annual rent,17500,170,2975000,20,leased,2026-06-18,54,24.885987,46.833284
+SRE-017,Al Rawabi,الروابي,East,residential,sale,asking price,885,7500,6638000,15,available,2026-06-03,69,24.690223,46.778966
+SRE-018,Al Rawdah,الروضة,East,residential,sale,asking price,630,5550,3497000,15,sold,2026-04-20,113,24.740786,46.770863
+SRE-019,Al Rayyan,الريان,East,residential,sale,asking price,375,8000,3000000,20,available,2026-02-21,171,24.716419,46.768875
+SRE-020,Al Saadah,السعادة,East,residential,sale,asking price,550,3600,1980000,15,available,2026-05-14,89,24.701419,46.846903
+SRE-021,Al Sharq,الشرق,East,residential,sale,asking price,425,3800,1615000,20,available,2026-06-06,66,24.898085,46.870354
+SRE-022,Al Sharq,الشرق,East,residential,sale,asking price,690,4000,2760000,20,available,2026-05-15,88,24.865537,46.869619
+SRE-023,Al Safa,الصفا,East,commercial,lease,annual rent,2150,465,1000000,60,leased,2026-07-12,30,24.676321,46.769275
+SRE-024,Al Fayha,الفيحاء,East,residential,sale,asking price,750,4500,3375000,15,available,2026-04-23,110,24.67835,46.81555
+SRE-025,Al Qadisiyah,القادسية,East,commercial,sale,asking price,2400,3325,7980000,30,sold,2026-07-25,17,24.820911,46.823696
+SRE-026,Al Qadisiyah,القادسية,East,commercial,sale,asking price,2400,2100,5040000,30,sold,2026-07-17,25,24.829737,46.833626
+SRE-027,Al Qadisiyah,القادسية,East,commercial,lease,annual rent,324,185,60000,20,leased,2026-05-24,79,24.830235,46.829453
+SRE-028,Al Quds,القدس,East,residential,sale,asking price,375,7100,2663000,20,sold,2026-04-15,118,24.754745,46.758693
+SRE-029,Al Malaz,الملز,East,residential,lease,annual rent,1255,200,251000,20,available,2026-06-19,53,24.674308,46.733789
+SRE-030,King Faisal,الملك فيصل,East,residential,sale,asking price,500,5500,2750000,15,available,2026-06-24,48,24.766703,46.776488
+SRE-031,Al Manar,المنار,East,commercial,sale,asking price,3500,3500,12250000,40,sold,2026-07-19,23,24.734669,46.800148
+SRE-032,Al Munsiyah,المونسية,East,commercial,sale,asking price,2500,7500,18750000,30,sold,2026-07-21,21,24.834036,46.761001
+SRE-033,Al Naseem Al Sharqi,النسيم الشرقي,East,residential,sale,asking price,750,2650,1988000,15,available,2026-06-19,53,24.73539,46.848172
+SRE-034,Al Naseem Al Gharbi,النسيم الغربي,East,commercial,sale,asking price,700,6000,4200000,40,sold,2026-07-16,26,24.724022,46.812616
+SRE-035,Al Nadheem,النظيم,East,commercial,sale,asking price,2475,3200,7920000,40,sold,2026-07-22,20,24.849048,46.927384
+SRE-036,Al Nadheem,النظيم,East,commercial,sale,asking price,1793,3000,5379000,40,sold,2026-07-17,25,24.84994,46.949863
+SRE-037,Al Nahdah,النهضة,East,residential,sale,asking price,408,4000,1632000,15,available,2026-03-25,139,24.766031,46.824875
+SRE-038,Al Nahdah,النهضة,East,residential,sale,asking price,375,3100,1163000,10,available,2026-05-15,88,24.76525,46.8238
+SRE-039,Al Yarmuk,اليرموك,East,residential,sale,asking price,325,6500,2113000,20,available,2026-05-29,74,24.816002,46.785864
+SRE-040,Qurtubah,قرطبة,East,residential,sale,asking price,418,6800,2842000,15,reserved,2026-06-02,70,24.81666,46.750633
+SRE-041,Al Rabie,الربيع,North,residential,sale,asking price,312,10525,3284000,15,available,2026-03-24,140,24.78339,46.647713
+SRE-042,Al Rahmaniyah,الرحمانية,North,residential,sale,asking price,400,7500,3000000,20,available,2026-03-07,157,24.717131,46.665444
+SRE-043,Al Sulaimaniyah,السليمانية,North,residential,sale,asking price,320,6300,2016000,10,sold,2026-04-21,112,24.708436,46.697192
+SRE-044,Al Sahafah,الصحافة,North,residential,sale,asking price,378,7000,2646000,10,sold,2026-04-28,105,24.817453,46.641341
+SRE-045,Al Aridh,العارض,North,residential,sale,asking price,325,6500,2113000,20,sold,2026-06-20,52,24.85969,46.602737
+SRE-046,Al Aridh,العارض,North,residential,sale,asking price,450,5000,2250000,15,available,2026-07-17,25,24.906896,46.583222
+SRE-047,Al Aqiq,العقيق,North,residential,sale,asking price,400,9500,3800000,25,sold,2026-07-10,32,24.773299,46.633979
+SRE-048,Al Olaya,العليا,North,residential,sale,asking price,560,8925,4998000,12,available,2026-03-26,138,24.702688,46.684547
+SRE-049,Al Ghadeer,الغدير,North,residential,sale,asking price,390,13000,5070000,15,available,2026-03-13,151,24.774139,46.652495
+SRE-050,Al Falah,الفلاح,North,residential,sale,asking price,1200,10000,12000000,20,sold,2026-06-03,69,24.800026,46.712769
+SRE-051,Al Qirawan,القيروان,North,residential,sale,asking price,400,7500,3000000,15,available,2026-05-27,76,24.825832,46.559071
+SRE-052,Al Qirawan,القيروان,North,residential,sale,asking price,306,10000,3060000,15,available,2026-03-28,136,24.837006,46.596952
+SRE-053,Al Muhammadiyah,المحمدية,North,residential,sale,asking price,375,13000,4875000,20,sold,2026-05-06,97,24.725803,46.647243
+SRE-054,Al Mursalat,المرسلات,North,residential,sale,asking price,603,7500,4523000,12,available,2026-05-05,98,24.751331,46.680256
+SRE-055,Al Muruj,المروج,North,residential,sale,asking price,842,9000,7578000,15,reserved,2026-06-13,59,24.753063,46.672776
+SRE-056,Al Masif,المصيف,North,residential,sale,asking price,2800,8000,22400000,15,available,2026-06-13,59,24.764705,46.67234
+SRE-057,Al Malqa,الملقا,North,residential,sale,asking price,4950,10875,53831000,60,sold,2026-06-16,56,24.799033,46.606757
+SRE-058,King Fahd,الملك فهد,North,residential,sale,asking price,525,6500,3413000,10,reserved,2026-04-15,118,24.746,46.675802
+SRE-059,Al Nakheel,النخيل,North,residential,sale,asking price,324,11500,3726000,15,available,2026-05-12,91,24.743826,46.649638
+SRE-060,Al Narjis,النرجس,North,residential,sale,asking price,450,8000,3600000,15,available,2026-07-15,27,24.851292,46.677662
+SRE-061,Al Narjis,النرجس,North,residential,sale,asking price,900,16250,14625000,80,available,2026-04-18,115,24.869171,46.662404
+SRE-062,Al Nuzha,النزهة,North,residential,sale,asking price,414,16025,6634000,30,sold,2026-06-21,51,24.752598,46.70995
+SRE-063,Al Waha,الواحة,North,residential,sale,asking price,567,8800,4990000,12,available,2026-03-15,149,24.736674,46.710292
+SRE-064,Al Wadi,الوادي,North,residential,sale,asking price,325,8000,2600000,12,reserved,2026-04-22,111,24.793417,46.681929
+SRE-065,Al Yasmin,الياسمين,North,residential,sale,asking price,504,9000,4536000,15,reserved,2026-07-05,37,24.831035,46.644349
+SRE-066,Banban,بنبان,North,residential,lease,annual rent,750,65,49000,15,reserved,2026-05-12,91,24.969035,46.572145
+SRE-067,Hittin,حطين,North,residential,sale,asking price,397,10000,3970000,15,available,2026-04-12,121,24.776452,46.581774
+SRE-068,Salahuddin,صلاح الدين,North,residential,sale,asking price,790,7525,5945000,12,available,2026-03-02,162,24.732804,46.688433
+SRE-069,Uhud,أحد,South,residential,lease,annual rent,975,200,195000,15,available,2026-07-15,27,24.486783,46.628425
+SRE-070,Al Dar Al Baida,الدار البيضاء,South,commercial,lease,annual rent,3483,110,383000,30,leased,2026-07-19,23,24.548764,46.766644
+SRE-071,Al Difa,الدفاع,South,commercial,lease,annual rent,7804,155,1210000,40,leased,2026-06-09,63,24.579773,46.83072
+SRE-072,Al Difa,الدفاع,South,commercial,lease,annual rent,7500,90,675000,20,reserved,2026-07-03,39,24.586633,46.81165
+SRE-073,Al Shifa,الشفا,South,residential,sale,asking price,583,2500,1458000,15,available,2026-06-22,50,24.571882,46.697333
+SRE-074,Al Aziziyah,العزيزية,South,residential,sale,asking price,397,2525,1002000,20,sold,2026-04-17,116,24.581476,46.796365
+SRE-075,Al Ghannamiyah,الغنامية,South,residential,lease,annual rent,853,70,60000,15,available,2026-07-07,35,24.473782,46.818301
+SRE-076,Al Marwah,المروة,South,commercial,lease,annual rent,2800,200,560000,60,leased,2026-07-19,23,24.538514,46.687512
+SRE-077,Al Mashael,المشاعل,South,commercial,sale,asking price,7144,1500,10716000,20,available,2026-04-12,121,24.598146,46.898921
+SRE-078,Al Mashael,المشاعل,South,commercial,lease,annual rent,17853,180,3214000,60,available,2026-03-15,149,24.603227,46.838049
+SRE-079,Al Masani,المصانع,South,residential,sale,asking price,1583,2200,3483000,30,available,2026-02-22,170,24.559344,46.756026
+SRE-080,Al Manakh,المناخ,South,commercial,lease,annual rent,8066,175,1412000,15,available,2026-06-29,43,24.603269,46.787168
+SRE-081,Al Manakh,المناخ,South,commercial,lease,annual rent,7917,90,713000,36,available,2026-07-25,17,24.590807,46.807197
+SRE-082,Al Manakh,المناخ,South,commercial,lease,annual rent,14991,120,1799000,20,leased,2026-07-01,41,24.588993,46.8094
+SRE-083,Al Manakh,المناخ,South,commercial,sale,asking price,7263,1300,9442000,20,available,2026-03-01,163,24.600154,46.794946
+SRE-084,Al Mansouriyah,المنصورية,South,commercial,lease,annual rent,10400,80,832000,30,reserved,2026-05-01,102,24.535531,46.796793
+SRE-085,Al Mansouriyah,المنصورية,South,commercial,lease,annual rent,5850,100,585000,30,leased,2026-06-08,64,24.533676,46.792191
+SRE-086,Al Mansouriyah,المنصورية,South,commercial,lease,annual rent,9600,100,960000,80,available,2026-05-29,74,24.541269,46.802103
+SRE-087,Al Noor,النور,South,commercial,lease,annual rent,1922,250,481000,30,leased,2026-07-22,20,24.637457,46.8089
+SRE-088,Badr,بدر,South,residential,sale,asking price,450,1500,675000,15,sold,2026-06-08,64,24.561427,46.7232
+SRE-089,Taybah,طيبة,South,commercial,sale,asking price,5269,1400,7377000,60,available,2026-04-20,113,24.555834,46.84651
+SRE-090,Taybah,طيبة,South,commercial,sale,asking price,1759,3000,5277000,60,sold,2026-07-31,11,24.571334,46.828897
+SRE-091,Taybah,طيبة,South,commercial,lease,annual rent,1155,120,139000,20,available,2026-03-07,157,24.557044,46.835565
+SRE-092,Taybah,طيبة,South,commercial,lease,annual rent,4000,250,1000000,25,available,2026-07-07,35,24.558632,46.83941
+SRE-093,Taybah,طيبة,South,commercial,lease,annual rent,9623,130,1251000,20,available,2026-07-08,34,24.555116,46.852181
+SRE-094,Taybah,طيبة,South,commercial,sale,asking price,10000,1350,13500000,40,reserved,2026-07-19,23,24.561953,46.84371
+SRE-095,Uraydh,عريض,South,residential,sale,asking price,750,1100,825000,15,reserved,2026-06-26,46,24.445295,46.720856
+SRE-096,Uraydh,عريض,South,residential,sale,asking price,400,1250,500000,20,sold,2026-06-30,42,24.446793,46.703498
+SRE-097,Ukaz,عكاظ,South,commercial,sale,asking price,7700,1500,11550000,30,reserved,2026-04-22,111,24.512373,46.656629
+SRE-098,Al Hazm,الحزم,West,residential,sale,asking price,700,3000,2100000,36,available,2026-05-08,95,46.643477,24.534333
+SRE-099,Al Duraihemiyah,الدريهمية,West,residential,sale,asking price,3188,2500,7970000,15,available,2026-06-16,56,24.589908,46.701413
+SRE-100,Al Suwaidi,السويدي,West,residential,sale,asking price,562,3000,1686000,10,sold,2026-07-14,28,24.592384,46.669941
+SRE-101,Al Suwaidi Al Gharbi,السويدي الغربي,West,residential,sale,asking price,625,3300,2063000,12,reserved,2026-06-30,42,24.573347,46.616624
+SRE-102,Al Uraija Al Gharbiyah,العريجاء الغربية,West,residential,sale,asking price,625,2550,1594000,12,available,2026-02-14,178,24.58734,46.615734
+SRE-103,Al Uraija Al Wusta,العريجاء الوسطى,West,residential,sale,asking price,1085,2700,2930000,15,reserved,2026-05-16,87,24.607685,46.65145
+SRE-104,Al Mahdiyah,المهدية,West,residential,sale,asking price,300,4675,1403000,20,available,2025-12-02,252,24.644238,46.492345
+SRE-105,Al Mahdiyah,المهدية,West,residential,lease,annual rent,450,70,32000,20,available,2025-11-09,275,24.662998,46.526573
+SRE-106,Al Mahdiyah,المهدية,West,residential,sale,asking price,450,3600,1620000,20,available,2025-09-24,321,24.65813,46.505307
+SRE-107,Al Mahdiyah,المهدية,West,residential,sale,asking price,750,2800,2100000,15,available,2025-10-13,302,24.625143,46.480719
+SRE-108,Al Mahdiyah,المهدية,West,residential,lease,annual rent,420,100,42000,20,available,2025-10-03,312,24.633861,46.479633
+SRE-109,Al Mahdiyah,المهدية,West,residential,sale,asking price,542,4200,2276000,15,available,2025-11-20,264,24.640316,46.474942
+SRE-110,Al Mahdiyah,المهدية,West,residential,sale,asking price,537,3050,1638000,15,available,2025-11-23,261,24.638706,46.471601
+SRE-111,Al Mahdiyah,المهدية,West,residential,sale,asking price,375,3475,1303000,20,sold,2026-07-17,25,24.649635,46.504481
+SRE-112,Al Hada,الهدا,West,residential,sale,asking price,600,9000,5400000,15,available,2026-07-02,40,24.679377,46.645668
+SRE-113,Dahiyat Namar,ضاحية نمار,West,residential,sale,asking price,724,1400,1014000,15,reserved,2026-07-09,33,24.490828,46.544273
+SRE-114,Dahiyat Namar,ضاحية نمار,West,commercial,lease,annual rent,2112,190,401000,40,leased,2026-07-04,38,24.505818,46.553965
+SRE-115,Tuwaiq,طويق,West,residential,sale,asking price,420,3500,1470000,20,available,2026-02-06,186,24.554179,46.506026
+SRE-116,Dhahrat Al Badiah,ظهرة البديعة,West,residential,sale,asking price,1650,3000,4950000,15,available,2026-04-08,125,24.591566,46.647269
+SRE-117,Dhahrat Laban,ظهرة لبن,West,residential,sale,asking price,768,2750,2112000,15,available,2026-03-01,163,24.624719,46.509339
+SRE-118,Dhahrat Laban,ظهرة لبن,West,residential,sale,asking price,450,3200,1440000,20,available,2026-04-11,122,24.62348,46.513389
+SRE-119,Dhahrat Namar,ظهرة نمار,West,commercial,lease,annual rent,650,300,195000,60,reserved,2026-07-31,11,24.551966,46.589788
+SRE-120,Irqah,عرقة,West,residential,sale,asking price,1021,6500,6637000,12,available,2026-03-23,141,24.676822,46.581195

@@ -1,26 +1,152 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------------ */
+/* Sarj brand tokens                                                        */
+/* ------------------------------------------------------------------------ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f4ef; /* warm off-white / cream canvas */
+  --foreground: #1a1523; /* near-black, warmed toward the brand violet */
+  --primary: #3b2e7e; /* deep violet-navy — headings, logo, key UI */
+  --accent: #7c6bd6; /* living lilac accent — highlights */
+  --hairline: #e4ded1; /* hairline borders on the cream canvas */
+  --muted: #6b6558; /* muted warm gray for secondary text */
+
+  /* Map pin colors by parcel status — see src/lib/mapTheme.ts, the single
+     source both the Leaflet pins and the on-map legend read from, so a
+     legend swatch always matches its pin exactly. Chosen for contrast
+     against the dark Esri basemap: available stays the brand's own
+     violet (most prominent); sold is desaturated so it visibly recedes;
+     reserved/leased are pulled far enough apart in hue (amber vs. teal)
+     to stay distinct from violet and from each other. */
+  --status-available: var(--accent);
+  --status-reserved: #d9a441;
+  --status-sold: #8c887e;
+  --status-leased: #3fa88f;
+
+  /* Which physical font a "heading"/"body" role resolves to flips with
+     the document direction — Playfair Display has no Arabic glyphs, so
+     Arabic text must always render in IBM Plex Sans Arabic, never fall
+     back silently to a generic sans. */
+  --heading-font-family: var(--font-playfair);
+  --body-font-family: var(--font-inter);
+}
+
+html[dir="rtl"] {
+  --heading-font-family: var(--font-plex-arabic);
+  --body-font-family: var(--font-plex-arabic);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-hairline: var(--hairline);
+  --color-muted: var(--muted);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-heading: var(--heading-font-family);
+  --font-body: var(--body-font-family);
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-inter);
+  --font-arabic: var(--font-plex-arabic);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--body-font-family);
+}
+
+/* ------------------------------------------------------------------------ */
+/* Section label motif — "▪ THE PROBLEM"                                    */
+/* ------------------------------------------------------------------------ */
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--body-font-family);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-variant-caps: small-caps;
+  color: var(--color-primary);
+}
+
+.section-label::before {
+  content: "";
+  inline-size: 0.4em;
+  block-size: 0.4em;
+  flex-shrink: 0;
+  background: currentColor;
+}
+
+/* ------------------------------------------------------------------------ */
+/* Grain gradient — subtle, for the hero band                               */
+/* ------------------------------------------------------------------------ */
+
+:root {
+  /* Hue of the brand's own violet/lilac (matches --primary/--accent above).
+     Callers can override --grain-hue inline to retint this same gradient
+     without leaving the brand's violet/lilac family. */
+  --grain-hue: 256;
+}
+
+.brand-grain {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      120% 100% at 12% -10%,
+      hsl(var(--grain-hue) 55% 62% / 22%),
+      transparent 55%
+    ),
+    radial-gradient(
+      120% 100% at 88% 110%,
+      hsl(var(--grain-hue) 45% 32% / 18%),
+      transparent 55%
+    ),
+    var(--color-background);
+}
+
+.brand-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ------------------------------------------------------------------------ */
+/* Map side-panel entrance — pure CSS, no state                             */
+/* ------------------------------------------------------------------------ */
+
+/* ParcelSidePanel plays one of these once on mount (see its `key` prop in
+   ParcelMapView, which forces a fresh mount — and so a fresh animation —
+   whenever a different pin is selected). Deliberately not a JS-driven
+   transition: that pattern needs a closed-then-open double render, which
+   means calling setState from inside an effect purely to trigger a
+   repaint — exactly what react-hooks/set-state-in-effect flags, and for
+   good reason here since a CSS animation does the same job with no
+   render cost. */
+@keyframes panel-slide-up {
+  from {
+    translate: 0 100%;
+  }
+}
+
+@keyframes panel-slide-from-end {
+  from {
+    translate: 100% 0;
+  }
+}
+
+@keyframes panel-slide-from-start {
+  from {
+    translate: -100% 0;
+  }
 }
