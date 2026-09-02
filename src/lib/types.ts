@@ -113,6 +113,12 @@ export type SanadRecordType = "interest" | "unmet_lead";
 export interface SanadInquiryRecord {
   inquiry_id: string; // display label, "INQ-049" onward — see sanadStore.ts
   internal_id: string; // UUIDv7, the true persistent identifier
+  // True only for the demo seed rows in sanadSeed.ts, which stand in for
+  // the server-side database a production build would read here (this
+  // app's only store is the visitor's own localStorage). Never set on a
+  // record captured from a real conversation, so the two can always be
+  // told apart in code even though the dashboard renders them alike.
+  seed?: boolean;
   date: string; // "YYYY-MM-DD", the day it was captured
   investor_name: string;
   phone: string;

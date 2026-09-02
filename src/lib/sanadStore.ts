@@ -6,15 +6,17 @@
 // server-side database here), so every export assumes it's called from a
 // Client Component after hydration.
 import { generateUuidV7 } from "./id";
+import { LAST_SEED_SEQUENCE, SEED_SANAD_RECORDS } from "./sanadSeed";
 import type { SanadInquiryRecord } from "./types";
 
 // Exported so the admin dashboard's live feed (src/app/admin/page.tsx)
 // can recognize this key in "storage" events fired by other tabs,
 // without duplicating the literal string.
 export const STORAGE_KEY = "sarj:sanad-inquiries";
-// The 48 seed inquiries occupy INQ-001..INQ-048 — new leads continue the
-// same sequence from there rather than starting a colliding numbering.
-const FIRST_SEQUENCE = 49;
+// The 48 baseline inquiries occupy INQ-001..INQ-048 and the demo seeds
+// continue to LAST_SEED_SEQUENCE — newly captured leads carry on from
+// there rather than starting a numbering that collides with either.
+const FIRST_SEQUENCE = LAST_SEED_SEQUENCE + 1;
 
 // All Sanad-captured leads persisted so far, newest-last. Returns an
 // empty list rather than throwing on any storage error (corrupted JSON,
@@ -31,6 +33,23 @@ export function getAllSanadInquiries(): SanadInquiryRecord[] {
   } catch {
     return [];
   }
+}
+
+// What the dashboard and admin-Sanad should actually SEE: the demo seed
+// backlog (sanadSeed.ts) followed by everything this browser has really
+// captured, oldest-first, matching getAllSanadInquiries' own ordering so
+// callers can keep treating the list as newest-last.
+//
+// Deliberately separate from getAllSanadInquiries above, which stays a
+// pure localStorage read: saveSanadInquiry writes that list straight back
+// to storage, and merging seeds into it would persist the demo rows into
+// the visitor's browser and re-save them on every submission.
+//
+// Safe to call during a server render — the seeds are static, and the
+// localStorage half degrades to [] off the browser, so the prerendered
+// HTML already contains the seeded inbox instead of an empty state.
+export function getSanadInquiriesForDisplay(): SanadInquiryRecord[] {
+  return [...SEED_SANAD_RECORDS, ...getAllSanadInquiries()];
 }
 
 // Persists one new lead and returns it with its ids assigned. Unlike the

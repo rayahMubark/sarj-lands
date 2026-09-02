@@ -426,6 +426,18 @@ export const dictionary = {
     ar: "حدث خطأ في الاتصال. حاول مرة أخرى.",
     en: "Something went wrong. Please try again.",
   },
+  // Shown when the API's per-IP rate limit rejects a turn (HTTP 429, see
+  // src/app/api/sanad/route.ts). Distinct from the generic error above so
+  // the reader knows to simply wait rather than assume Sanad is broken.
+  sanadErrorRateLimited: {
+    ar: "طلبات كثيرة في وقت قصير. يرجى المحاولة بعد قليل.",
+    en: "Too many requests. Please try again shortly.",
+  },
+  // Shown when a single message exceeds the API's length cap.
+  sanadErrorMessageTooLong: {
+    ar: "الرسالة طويلة جدًا. يرجى اختصارها وإعادة الإرسال.",
+    en: "That message is too long. Please shorten it and send again.",
+  },
   sanadRetryButton: {
     ar: "إعادة المحاولة",
     en: "Retry",

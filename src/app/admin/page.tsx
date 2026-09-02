@@ -11,7 +11,8 @@ import {
   type DemandVsSupply,
   type PortfolioStats,
 } from "@/lib/analytics";
-import { STORAGE_KEY, getAllSanadInquiries } from "@/lib/sanadStore";
+import { STORAGE_KEY, getSanadInquiriesForDisplay } from "@/lib/sanadStore";
+import { SEED_SANAD_RECORDS } from "@/lib/sanadSeed";
 import type { SanadInquiryRecord } from "@/lib/types";
 import { AdminTabNav, type AdminTabId } from "@/components/admin/AdminTabs";
 import { DemandVsSupplySection } from "@/components/admin/DemandVsSupplySection";
@@ -102,23 +103,27 @@ function OverviewTab({
 // another, the live feed below updates on its own, no refresh needed:
 // exactly the "closes the loop live" claim this section makes.
 function useLiveSanadInquiries(): SanadInquiryRecord[] {
-  // Starts empty — matching what the server renders exactly (there's no
-  // `window`/localStorage during SSR, see getAllSanadInquiries's own
-  // guard). A lazy useState initializer here would read real browser
-  // data on the client's very first render, diverging from the server's
-  // output and triggering a hydration mismatch — verified directly by
-  // seeding localStorage before load and watching React log exactly
-  // that. The effect below runs only after hydration completes, so its
-  // setState is the deferred-until-safe first read, not a render loop.
-  const [records, setRecords] = useState<SanadInquiryRecord[]>([]);
+  // Starts with the demo seed backlog alone (see sanadSeed.ts) — exactly
+  // what the server renders, since the seeds are static and the
+  // localStorage half of getSanadInquiriesForDisplay degrades to [] off
+  // the browser. Matching the server's output precisely is the point:
+  // reading real browser data in a lazy useState initializer would
+  // diverge from the prerender and trigger a hydration mismatch —
+  // verified directly by seeding localStorage before load and watching
+  // React log exactly that. Seeding the initial value this way also
+  // means the prerendered HTML already shows a populated inbox rather
+  // than an empty state that fills in a frame later.
+  const [records, setRecords] = useState<SanadInquiryRecord[]>(() => [
+    ...SEED_SANAD_RECORDS,
+  ]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- see the useState comment above: this is that deferred post-hydration read of browser-only storage, immediately followed by subscribing to further changes — not a redundant render trigger.
-    setRecords(getAllSanadInquiries());
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- see the useState comment above: this is the deferred post-hydration read that folds this browser's own captured leads in on top of the seeds, immediately followed by subscribing to further changes — not a redundant render trigger.
+    setRecords(getSanadInquiriesForDisplay());
 
     function handleStorageChange(event: StorageEvent) {
       if (event.key === STORAGE_KEY || event.key === null) {
-        setRecords(getAllSanadInquiries());
+        setRecords(getSanadInquiriesForDisplay());
       }
     }
 

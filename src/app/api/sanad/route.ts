@@ -19,6 +19,83 @@ import type { SanadInquiryRecord } from "@/lib/types";
 const GEMINI_MODEL = "gemini-3.5-flash-lite";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
+// ABUSE GUARDS. This route is public, unauthenticated, and backed by a
+// free-tier API key, so a single script could otherwise drain the daily
+// quota and take Sanad down for everyone. None of this changes what
+// Sanad says — it only bounds how often, and how much, it can be asked.
+//
+// The window is per-IP and fixed (not sliding): simple, allocation-free,
+// and precise enough for what it defends against. 15/minute is far above
+// real conversational use — a person typing sends maybe 2-4 — while
+// still capping an automated caller.
+const RATE_LIMIT_MAX_REQUESTS = 15;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+// One chat message's ceiling. ~2,000 characters is several paragraphs —
+// no genuine question comes close — but it stops a single request from
+// carrying a huge payload straight into the token bill.
+const MAX_MESSAGE_LENGTH = 2000;
+
+// How many turns of history actually reach Gemini. Everything older is
+// dropped from the REQUEST only (the panel still shows the full thread),
+// bounding the token cost of a long conversation: the system instruction
+// already carries the whole portfolio, so an unbounded transcript on top
+// of it is what would actually blow the context. 24 messages is ~12
+// exchanges, well past where a land enquiry is decided.
+const MAX_HISTORY_MESSAGES = 24;
+
+// A hard ceiling on the raw array before any of the above runs, so a
+// malicious body can't force us to walk a million-element list.
+const MAX_ACCEPTED_MESSAGES = 200;
+
+// Bilingual on purpose: this string can surface anywhere (the panel, a
+// direct curl, a future client), and the caller's language isn't known
+// here. The panel prefers its own localized copy — see requestSanadReply
+// in src/components/SanadPanel.tsx.
+const RATE_LIMITED_MESSAGE =
+  "طلبات كثيرة في وقت قصير. يرجى المحاولة بعد قليل. / Too many requests. Please try again shortly.";
+
+// requestCounts is module-level, so it lives as long as the serverless
+// instance that owns it and is NOT shared across instances — a deploy or
+// a scale-out resets it. That's an accepted limit, not an oversight: it
+// still throttles the realistic case (one abusive caller hitting one warm
+// instance) with no external dependency. A production deployment would
+// move this to a shared store (Redis / Vercel KV) or to the platform's
+// own edge rate limiting.
+const requestCounts = new Map<string, { count: number; windowStartMs: number }>();
+
+// Records one request against `clientId` and reports whether it should be
+// rejected. Also sweeps windows that have fully expired, so the map can't
+// grow without bound across a long-lived instance.
+function isRateLimited(clientId: string): boolean {
+  const now = Date.now();
+
+  for (const [id, entry] of requestCounts) {
+    if (now - entry.windowStartMs >= RATE_LIMIT_WINDOW_MS) requestCounts.delete(id);
+  }
+
+  const existing = requestCounts.get(clientId);
+  if (!existing) {
+    requestCounts.set(clientId, { count: 1, windowStartMs: now });
+    return false;
+  }
+
+  existing.count++;
+  return existing.count > RATE_LIMIT_MAX_REQUESTS;
+}
+
+// Best-effort caller identity. x-forwarded-for is set by Vercel and most
+// proxies and may be a comma-separated chain — the first entry is the
+// original client. Everything falls back to one shared "unknown" bucket,
+// which is the safe direction: an unidentifiable caller gets throttled
+// together with other unidentifiable callers rather than escaping the
+// limit entirely.
+function getClientId(request: Request): string {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) return forwardedFor.split(",")[0].trim();
+  return request.headers.get("x-real-ip") ?? "unknown";
+}
+
 interface ClientChatMessage {
   role: "user" | "assistant";
   text: string;
@@ -59,6 +136,20 @@ export async function POST(request: Request) {
     );
   }
 
+  // Checked before the body is even parsed, so a flood costs us as little
+  // work as possible. 429 + Retry-After is the conventional shape; the
+  // panel turns this into its own localized notice rather than showing
+  // the bilingual fallback text.
+  if (isRateLimited(getClientId(request))) {
+    return NextResponse.json(
+      { error: RATE_LIMITED_MESSAGE, rateLimited: true },
+      {
+        status: 429,
+        headers: { "Retry-After": String(RATE_LIMIT_WINDOW_MS / 1000) },
+      }
+    );
+  }
+
   let body: SanadRequestBody;
   try {
     body = await request.json();
@@ -76,10 +167,36 @@ export async function POST(request: Request) {
     );
   }
 
+  if (body.messages.length > MAX_ACCEPTED_MESSAGES) {
+    return NextResponse.json(
+      { error: "Conversation is too long." },
+      { status: 400 }
+    );
+  }
+
+  // Rejected rather than silently truncated: quietly sending a different
+  // question than the one that was asked, and answering it as if it were
+  // theirs, is worse than saying the message is too long.
+  if (
+    body.messages.some(
+      (message) =>
+        typeof message?.text === "string" && message.text.length > MAX_MESSAGE_LENGTH
+    )
+  ) {
+    return NextResponse.json(
+      { error: "Message is too long.", tooLong: true },
+      { status: 400 }
+    );
+  }
+
   try {
     const result = await callGemini(
       apiKey,
-      body.messages,
+      // Only the most recent turns reach Gemini — see MAX_HISTORY_MESSAGES.
+      // Taking from the END keeps the live part of the conversation and
+      // drops the oldest, which is also where the parcel context note is
+      // least needed (buildSystemInstruction re-grounds it every request).
+      body.messages.slice(-MAX_HISTORY_MESSAGES),
       body.launchState ?? null,
       body.liveSanadRecords ?? []
     );

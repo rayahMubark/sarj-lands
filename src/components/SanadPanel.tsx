@@ -21,7 +21,7 @@ import {
 } from "@/lib/i18n";
 import { useSanad, type SanadFormOffer, type SanadLaunchState, type SanadMode } from "@/lib/sanad";
 import { buildWhatsAppUrl } from "@/lib/sanadWhatsapp";
-import { getAllSanadInquiries } from "@/lib/sanadStore";
+import { getSanadInquiriesForDisplay } from "@/lib/sanadStore";
 import type { SanadInquiryRecord } from "@/lib/types";
 import { SanadContactForm } from "@/components/SanadContactForm";
 
@@ -169,8 +169,11 @@ function SanadPanelInner() {
       // sanadAdminPrompt.ts) — localStorage only exists in the browser,
       // so this is the one place they can be read and handed to the API
       // route, which has no server-side database of its own.
+      // Same merged view the dashboard's own inbox renders (demo seeds +
+      // this browser's real captures), so admin-Sanad and the Requests
+      // tab can never disagree about how many leads exist or who they are.
       const liveSanadRecords =
-        launchState?.mode === "admin" ? getAllSanadInquiries() : undefined;
+        launchState?.mode === "admin" ? getSanadInquiriesForDisplay() : undefined;
       const { reply, formOffer } = await requestSanadReply(
         historyForRequest,
         launchState,
@@ -186,8 +189,14 @@ function SanadPanelInner() {
         }
         return next;
       });
-    } catch {
-      setErrorText(t("sanadErrorRetry"));
+    } catch (error) {
+      // A guard the reader can clear themselves (too fast / too long) gets
+      // its own message; everything else keeps the generic retry copy.
+      setErrorText(
+        error instanceof SanadRequestError
+          ? t(error.translationKey)
+          : t("sanadErrorRetry")
+      );
     } finally {
       setIsSending(false);
     }
@@ -420,6 +429,18 @@ function buildInitialMessages(
 // Calls our own API route (never Gemini directly — see
 // src/app/api/sanad/route.ts) with the conversation so far, minus the
 // locally-seeded greeting.
+// A failure the reader can act on themselves, carrying the dictionary key
+// for what to tell them. Anything else thrown from requestSanadReply is
+// an ordinary fault and falls back to the generic retry copy.
+class SanadRequestError extends Error {
+  readonly translationKey: TranslationKey;
+
+  constructor(translationKey: TranslationKey) {
+    super(translationKey);
+    this.translationKey = translationKey;
+  }
+}
+
 async function requestSanadReply(
   history: SanadChatMessage[],
   launchState: SanadLaunchState | null,
@@ -437,6 +458,17 @@ async function requestSanadReply(
     }),
   });
 
+  // The API's abuse guards (see src/app/api/sanad/route.ts) get their own
+  // reader-facing copy: "you're going too fast, wait a moment" and "that
+  // message is too long" are both recoverable by the reader, unlike the
+  // generic failure, and telling them so beats a blanket "try again."
+  if (response.status === 429) {
+    throw new SanadRequestError("sanadErrorRateLimited");
+  }
+  if (response.status === 400) {
+    const details: { tooLong?: boolean } = await response.json().catch(() => ({}));
+    if (details.tooLong) throw new SanadRequestError("sanadErrorMessageTooLong");
+  }
   if (!response.ok) {
     throw new Error(`Sanad API responded with ${response.status}`);
   }
