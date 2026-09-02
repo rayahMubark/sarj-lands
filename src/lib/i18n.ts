@@ -678,6 +678,40 @@ export const dictionary = {
     ar: "فوق الميزانية",
     en: "Over budget",
   },
+  // "Money on the gap" — the demand-vs-supply counts restated as the SAR
+  // they represent. Sale and lease deliberately get SEPARATE strings, each
+  // carrying its own unit, so no piece of UI copy can present a one-off
+  // purchase budget and a recurring annual rent as one combined figure
+  // (the same rule PortfolioStats follows in src/lib/analytics.ts).
+  demandMoneyEyebrow: {
+    ar: "قيمة الطلب غير الملبّى",
+    en: "Value of unserved demand",
+  },
+  demandMoneySale: {
+    ar: "{value} مليون ريال طلب شراء لا يمكن تلبيته اليوم",
+    en: "{value}M SAR of purchase demand you can't serve today",
+  },
+  // The leading "+" is intentional: it reads as "and, separately," not as
+  // an addition to the sale figure above.
+  demandMoneyLease: {
+    ar: "+ {value} مليون ريال/سنة طلب إيجار",
+    en: "+ {value}M SAR/year of lease demand",
+  },
+  // The boardroom line: the hottest intent in the pipeline, unserved.
+  demandReadyToMove: {
+    ar: "{unserved} من {total} مستثمرًا جاهزون للشراء الآن — ولا يوجد لهم مخزون مناسب",
+    en: "{unserved} of {total} ready-to-move investors have nothing to buy from you",
+  },
+  // Per-gap money, appended to the top-gap highlight's pills. Two keys for
+  // the same reason as the two totals above.
+  topGapDemandValueSale: {
+    ar: "{value} مليون ريال طلب",
+    en: "{value}M SAR demand",
+  },
+  topGapDemandValueLease: {
+    ar: "{value} مليون ريال/سنة طلب",
+    en: "{value}M SAR/year demand",
+  },
   topGapEyebrow: {
     ar: "أكبر فجوة في الطلب",
     en: "Biggest demand gap",

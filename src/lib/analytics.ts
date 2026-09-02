@@ -113,6 +113,13 @@ export interface UnmetSegment {
   land_type: LandType;
   listing_type: ListingType;
   count: number;
+  // Summed budget_sar of the unmet inquiries in this segment. Safe to sum
+  // because listing_type is part of the segment key: every inquiry counted
+  // here shares one budget_basis, so a sale segment's figure is purely
+  // purchase budget and a lease segment's is purely annual rent. The two
+  // are only ever added together by a caller that keeps them apart — see
+  // DemandVsSupply's two separate totals below.
+  budgetSar: number;
 }
 
 export interface DemandVsSupply {
@@ -123,15 +130,42 @@ export interface DemandVsSupply {
   unmetOverBudget: number; // matching inventory exists, but all over budget / price-on-request
   topUnmetSegments: UnmetSegment[]; // unmet demand grouped by area+land_type+listing_type, sorted desc
   idleParcelIds: string[]; // available parcels that match zero inquiries (any budget) — cold inventory
+
+  // THE MONEY ON THE GAP: what the unmet counts above are actually worth.
+  // Two SEPARATE totals, never one combined figure — the same rule
+  // PortfolioStats follows. A "total purchase" budget is a one-off sum an
+  // investor would pay once; an "annual rent" budget recurs yearly. Adding
+  // them would invent a number that means nothing, so budget_basis (which
+  // travels with `prefers` on every inquiry — see src/lib/types.ts) picks
+  // exactly one of these for each unmet investor.
+  unservedSaleBudgetSar: number; // sum of budget_sar, unmet inquiries where prefers="sale"
+  unservedLeaseAnnualBudgetSar: number; // ...where prefers="lease"; SAR PER YEAR
+
+  // The sharpest cut of the same finding: investors who told us they are
+  // ready to move — the hottest intent in the pipeline — and still have
+  // nothing in this portfolio they can act on. Reported as a pair so the
+  // dashboard can say "N of M" rather than a bare count.
+  readyToMoveUnserved: number;
+  readyToMoveTotal: number;
 }
 
 export function demandVsSupply(): DemandVsSupply {
   let servable = 0;
   let unmetNoInventory = 0;
   let unmetOverBudget = 0;
+  let unservedSaleBudgetSar = 0;
+  let unservedLeaseAnnualBudgetSar = 0;
+  let readyToMoveUnserved = 0;
 
   const unmetSegmentCounts = new Map<string, UnmetSegment>();
   const matchedParcelIds = new Set<string>();
+
+  // Counted across ALL inquiries, not just unmet ones — it's the
+  // denominator of the "N of M ready-to-move investors" line, so it has to
+  // include the ready-to-move investors we CAN serve.
+  const readyToMoveTotal = inquiries.filter(
+    (inquiry) => inquiry.intent === "ready to move"
+  ).length;
 
   for (const inquiry of inquiries) {
     const ignoringBudget = matchAvailableIgnoringBudget(inquiry);
@@ -143,22 +177,39 @@ export function demandVsSupply(): DemandVsSupply {
       continue;
     }
 
+    // Everything below runs only for an UNMET inquiry — the same single
+    // pass that already decided that, so the money figures can never
+    // disagree with the counts beside them about who is unserved.
     if (ignoringBudget.length === 0) {
       unmetNoInventory++;
     } else {
       unmetOverBudget++;
     }
 
+    // `prefers` and `budget_basis` are locked together by the Inquiry
+    // union (sale <-> "total purchase", lease <-> "annual rent"), so
+    // branching on one is branching on the other: a purchase budget can
+    // never land in the annual-rent total or vice versa.
+    if (inquiry.prefers === "sale") {
+      unservedSaleBudgetSar += inquiry.budget_sar;
+    } else {
+      unservedLeaseAnnualBudgetSar += inquiry.budget_sar;
+    }
+
+    if (inquiry.intent === "ready to move") readyToMoveUnserved++;
+
     const key = `${inquiry.area_of_city_wanted}|${inquiry.land_type_wanted}|${inquiry.prefers}`;
     const existing = unmetSegmentCounts.get(key);
     if (existing) {
       existing.count++;
+      existing.budgetSar += inquiry.budget_sar;
     } else {
       unmetSegmentCounts.set(key, {
         area_of_city: inquiry.area_of_city_wanted,
         land_type: inquiry.land_type_wanted,
         listing_type: inquiry.prefers,
         count: 1,
+        budgetSar: inquiry.budget_sar,
       });
     }
   }
@@ -179,6 +230,10 @@ export function demandVsSupply(): DemandVsSupply {
     unmetOverBudget,
     topUnmetSegments,
     idleParcelIds,
+    unservedSaleBudgetSar,
+    unservedLeaseAnnualBudgetSar,
+    readyToMoveUnserved,
+    readyToMoveTotal,
   };
 }
 

@@ -1,6 +1,12 @@
 "use client";
 
-import { formatNumber, formatTemplate } from "@/lib/format";
+import {
+  formatEditorialCount,
+  formatMillionsSar,
+  formatMillionsSarCompact,
+  formatNumber,
+  formatTemplate,
+} from "@/lib/format";
 import {
   areaOfCityCompoundLabels,
   landTypeLabels,
@@ -26,6 +32,12 @@ interface AggregatedGap {
   landType: LandType;
   investorCount: number;
   availableCount: number;
+  // Kept as two fields, never one — an area+type gap can hold both sale
+  // and lease demand, and those budgets are different scales (see
+  // UnmetSegment.budgetSar in src/lib/analytics.ts). Either can be 0 when
+  // the gap is entirely one or the other.
+  saleBudgetSar: number;
+  leaseAnnualBudgetSar: number;
 }
 
 // The dashboard's headline insight: how much of investor demand today's
@@ -74,6 +86,8 @@ export function DemandVsSupplySection({
         </p>
       </div>
 
+      <UnservedDemandValue demand={demand} language={language} t={t} />
+
       {/* Two columns filling the card: the chart on one side, the written
           analysis on the other, so the card's width is put to use instead
           of everything stacking into one long column. Both columns are
@@ -118,6 +132,68 @@ export function DemandVsSupplySection({
   );
 }
 
+// The counts above restated as money — what "14 unmet" is actually worth,
+// which is the form leadership acts on. Deliberately the first thing in
+// the card, before the donut: the SAR figure is the headline finding and
+// the chart is its breakdown.
+//
+// The sale figure is the large serif number; the lease figure trails it as
+// its own line rather than being folded in, because an annual rent and a
+// one-off purchase total can never be added (see the two separate fields
+// on DemandVsSupply). The ready-to-move line then sits on its own tinted
+// row — same warm-alert red the "no inventory" donut segment uses — since
+// it's the sharpest cut of the same finding: not just demand, but demand
+// from investors who said they're ready to buy right now.
+function UnservedDemandValue({
+  demand,
+  language,
+  t,
+}: {
+  demand: DemandVsSupply;
+  language: Language;
+  t: (key: TranslationKey) => string;
+}) {
+  const hasSale = demand.unservedSaleBudgetSar > 0;
+  const hasLease = demand.unservedLeaseAnnualBudgetSar > 0;
+  if (!hasSale && !hasLease) return null;
+
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-hairline bg-foreground/[0.03] p-5">
+      <span className="section-label">{t("demandMoneyEyebrow")}</span>
+
+      {hasSale && (
+        <p className="font-heading text-2xl font-semibold leading-snug text-primary sm:text-3xl">
+          {formatTemplate(t("demandMoneySale"), {
+            value: formatMillionsSar(demand.unservedSaleBudgetSar, language),
+          })}
+        </p>
+      )}
+      {hasLease && (
+        <p className="font-heading text-lg font-semibold text-primary/80">
+          {formatTemplate(t("demandMoneyLease"), {
+            value: formatMillionsSar(demand.unservedLeaseAnnualBudgetSar, language),
+          })}
+        </p>
+      )}
+
+      {demand.readyToMoveUnserved > 0 && (
+        <p
+          className="rounded-lg px-3 py-2 text-sm font-semibold"
+          style={{
+            backgroundColor: `${UNMET_NO_INVENTORY_COLOR}14`,
+            color: UNMET_NO_INVENTORY_COLOR,
+          }}
+        >
+          {formatTemplate(t("demandReadyToMove"), {
+            unserved: formatEditorialCount(demand.readyToMoveUnserved, language),
+            total: formatEditorialCount(demand.readyToMoveTotal, language),
+          })}
+        </p>
+      )}
+    </div>
+  );
+}
+
 // UnmetSegment (from demandVsSupply) is grouped by area+type+listing_type
 // — finer than this headline needs, since an investor counts toward the
 // same gap whether they want to buy or lease. Re-grouping already-
@@ -132,15 +208,25 @@ function aggregateGapsByAreaAndType(
 
   for (const segment of segments) {
     const key = `${segment.area_of_city}|${segment.land_type}`;
+    // listing_type is what was dropped by this regrouping, so it's exactly
+    // what decides which of the two budget buckets this segment's money
+    // belongs in — the sale/lease split survives the aggregation.
+    const saleBudgetSar = segment.listing_type === "sale" ? segment.budgetSar : 0;
+    const leaseAnnualBudgetSar = segment.listing_type === "lease" ? segment.budgetSar : 0;
+
     const existing = totals.get(key);
     if (existing) {
       existing.investorCount += segment.count;
+      existing.saleBudgetSar += saleBudgetSar;
+      existing.leaseAnnualBudgetSar += leaseAnnualBudgetSar;
       continue;
     }
     totals.set(key, {
       areaOfCity: segment.area_of_city,
       landType: segment.land_type,
       investorCount: segment.count,
+      saleBudgetSar,
+      leaseAnnualBudgetSar,
       availableCount: parcels.filter(
         (parcel) =>
           parcel.status === "available" &&
@@ -174,6 +260,24 @@ function TopGapCallout({
             ? t("topGapInvestorCountSingular")
             : formatTemplate(t("topGapInvestorCount"), { count: formatNumber(gap.investorCount) })}
         </span>
+        {/* The money for THIS gap, between the investor count and the
+            supply count, so the pill row reads as one sentence:
+            "8 investors · 17.8M SAR demand · 0 available". Sale and lease
+            get their own pill when both are present. */}
+        {gap.saleBudgetSar > 0 && (
+          <span className="rounded-full bg-accent/15 px-3 py-1 text-sm font-semibold text-primary">
+            {formatTemplate(t("topGapDemandValueSale"), {
+              value: formatMillionsSarCompact(gap.saleBudgetSar),
+            })}
+          </span>
+        )}
+        {gap.leaseAnnualBudgetSar > 0 && (
+          <span className="rounded-full bg-accent/15 px-3 py-1 text-sm font-semibold text-primary">
+            {formatTemplate(t("topGapDemandValueLease"), {
+              value: formatMillionsSarCompact(gap.leaseAnnualBudgetSar),
+            })}
+          </span>
+        )}
         <span className="rounded-full border border-hairline px-3 py-1 text-sm text-muted">
           {formatTemplate(t("topGapAvailableCount"), { count: formatNumber(gap.availableCount) })}
         </span>
