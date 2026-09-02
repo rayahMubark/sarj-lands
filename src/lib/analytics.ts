@@ -7,6 +7,7 @@ import type {
   LandType,
   ListingType,
   ParcelStatus,
+  UseCategory,
 } from "./types";
 
 // Available parcels matching an inquiry's area/type/listing preference,
@@ -275,6 +276,109 @@ export function sortInvestorsByPriority(investors: Inquiry[]): Inquiry[] {
       INTENT_PRIORITY[a.intent] - INTENT_PRIORITY[b.intent] ||
       b.budget_sar - a.budget_sar
   );
+}
+
+// WHAT INVESTORS ACTUALLY WANT TO DO WITH THE LAND. `wants_to` is free
+// text on every inquiry ("open a warehouse", "build a family home") and
+// is the one column that says what the demand is FOR, rather than where
+// or how much. All 48 rows carry one of nine values.
+//
+// The higher-level split below answers a question the raw counts don't:
+// commercial-vs-residential is already visible in land_type_wanted, but
+// "residential" hides two completely different customers — a developer
+// building apartments to rent out, and a family building one home. Those
+// want different plots and buy on different logic, so they are separated
+// here. UseCategory itself lives in ./types with the other shared domain
+// types, so i18n can label it without importing this module.
+
+// The mapping, kept in code rather than derived, because it encodes a
+// judgement the data itself doesn't state. Verified against the data:
+// every one of the nine values maps cleanly, and each also corresponds to
+// exactly one land_type_wanted (all five "business" uses are commercial
+// inquiries, all four others residential), so this split never contradicts
+// the portfolio's own typing — it subdivides it.
+//
+// The one genuine judgement call is "build a residential compound":
+// classified as development, since a compound at this scale is built to
+// sell or let rather than to live in. "build a family home" is the only
+// personal-use value.
+const USE_CATEGORY_BY_INTENDED_USE: Record<string, UseCategory> = {
+  "open a warehouse": "business",
+  "open a car showroom": "business",
+  "open an office building": "business",
+  "open a retail store": "business",
+  "open a showroom": "business",
+  "build a residential compound": "development",
+  "build apartments to rent": "development",
+  "build villas to sell": "development",
+  "build a family home": "personal",
+};
+
+export interface IntendedUseCount {
+  wantsTo: string; // the raw wants_to value, as written in the data
+  count: number;
+  category: UseCategory | null; // null if a future value isn't mapped above
+}
+
+// Every distinct `wants_to` across the 48 inquiries with its count,
+// commonest first. Keyed on the raw string, so a value that isn't in the
+// mapping above still appears here with its real count — nothing silently
+// vanishes from the totals just because it wasn't anticipated.
+export function demandByIntendedUse(): IntendedUseCount[] {
+  const counts = new Map<string, number>();
+  for (const inquiry of inquiries) {
+    counts.set(inquiry.wants_to, (counts.get(inquiry.wants_to) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .map(([wantsTo, count]) => ({
+      wantsTo,
+      count,
+      category: USE_CATEGORY_BY_INTENDED_USE[wantsTo] ?? null,
+    }))
+    .sort((a, b) => b.count - a.count || a.wantsTo.localeCompare(b.wantsTo));
+}
+
+export interface UseCategoryBreakdown {
+  business: number;
+  development: number;
+  personal: number;
+  // Inquiries whose wants_to isn't in the mapping. 0 with today's data;
+  // surfaced rather than dropped so the three counts above can always be
+  // checked against the inquiry total instead of silently under-counting.
+  unclassified: number;
+  total: number;
+}
+
+export function demandByUseCategory(): UseCategoryBreakdown {
+  const breakdown: UseCategoryBreakdown = {
+    business: 0,
+    development: 0,
+    personal: 0,
+    unclassified: 0,
+    total: inquiries.length,
+  };
+
+  for (const inquiry of inquiries) {
+    const category = USE_CATEGORY_BY_INTENDED_USE[inquiry.wants_to];
+    if (category) {
+      breakdown[category]++;
+    } else {
+      breakdown.unclassified++;
+    }
+  }
+
+  return breakdown;
+}
+
+// Whether "most of the demand is commercial, not residential" is actually
+// true of the data, rather than a line asserted and hoped for: business
+// use must outweigh BOTH other categories combined, since development and
+// personal use are together exactly the residential demand. The dashboard
+// only prints that takeaway when this holds, and falls back to naming
+// whichever category actually leads.
+export function isBusinessUseDominant(breakdown: UseCategoryBreakdown): boolean {
+  return breakdown.business > breakdown.development + breakdown.personal;
 }
 
 // A reasonable minimum sample size before an average/median is worth

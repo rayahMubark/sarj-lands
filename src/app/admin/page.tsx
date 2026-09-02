@@ -5,11 +5,15 @@ import { formatNumber } from "@/lib/format";
 import { useLanguage } from "@/lib/i18n";
 import { parcels, inquiries } from "@/lib/data";
 import {
+  demandByIntendedUse,
+  demandByUseCategory,
   demandVsSupply,
   idleAvailableParcels,
   portfolioStats,
   type DemandVsSupply,
+  type IntendedUseCount,
   type PortfolioStats,
+  type UseCategoryBreakdown,
 } from "@/lib/analytics";
 import { STORAGE_KEY, getSanadInquiriesForDisplay } from "@/lib/sanadStore";
 import { SEED_SANAD_RECORDS } from "@/lib/sanadSeed";
@@ -17,6 +21,7 @@ import type { SanadInquiryRecord } from "@/lib/types";
 import { AdminTabNav, type AdminTabId } from "@/components/admin/AdminTabs";
 import { DemandVsSupplySection } from "@/components/admin/DemandVsSupplySection";
 import { IdleInventorySection } from "@/components/admin/IdleInventorySection";
+import { IntendedUseSection } from "@/components/admin/IntendedUseSection";
 import { PipelineSection } from "@/components/admin/PipelineSection";
 import { RequestsInboxSection } from "@/components/admin/RequestsInboxSection";
 
@@ -44,6 +49,8 @@ export default function AdminPage() {
   const idleParcels = [...idleAvailableParcels()].sort(
     (a, b) => b.days_on_market - a.days_on_market
   );
+  const intendedUses = demandByIntendedUse();
+  const useCategories = demandByUseCategory();
   const sanadRecords = useLiveSanadInquiries();
   const [activeTab, setActiveTab] = useState<AdminTabId>("overview");
 
@@ -63,7 +70,14 @@ export default function AdminPage() {
         requestsBadgeCount={sanadRecords.length}
       />
 
-      {activeTab === "overview" && <OverviewTab stats={stats} demand={demand} />}
+      {activeTab === "overview" && (
+        <OverviewTab
+          stats={stats}
+          demand={demand}
+          intendedUses={intendedUses}
+          useCategories={useCategories}
+        />
+      )}
       {activeTab === "requests" && <RequestsInboxSection records={sanadRecords} />}
       {activeTab === "idle" && <IdleInventorySection idleParcels={idleParcels} />}
       {activeTab === "pipeline" && <PipelineSection inquiries={inquiries} />}
@@ -77,9 +91,13 @@ export default function AdminPage() {
 function OverviewTab({
   stats,
   demand,
+  intendedUses,
+  useCategories,
 }: {
   stats: PortfolioStats;
   demand: DemandVsSupply;
+  intendedUses: IntendedUseCount[];
+  useCategories: UseCategoryBreakdown;
 }) {
   const { t } = useLanguage();
 
@@ -92,6 +110,9 @@ function OverviewTab({
       <div className="border-t border-hairline pt-8">
         <DemandVsSupplySection demand={demand} parcels={parcels} />
       </div>
+      {/* What that demand is actually FOR — the wants_to read, sitting
+          directly under the demand-vs-supply card it explains. */}
+      <IntendedUseSection uses={intendedUses} categories={useCategories} />
     </div>
   );
 }

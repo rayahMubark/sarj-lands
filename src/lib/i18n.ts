@@ -17,6 +17,7 @@ import type {
   LandType,
   ListingType,
   ParcelStatus,
+  UseCategory,
 } from "./types";
 
 export type Language = "ar" | "en";
@@ -712,6 +713,35 @@ export const dictionary = {
     ar: "{value} مليون ريال/سنة طلب",
     en: "{value}M SAR/year demand",
   },
+  // "Demand by intended use" — the wants_to analysis.
+  intendedUseSectionTitle: {
+    ar: "الطلب حسب نوع الاستخدام",
+    en: "Demand by intended use",
+  },
+  intendedUseSectionSubtitle: {
+    ar: "ما ينوي المستثمرون بناءه أو تشغيله على الأرض، عبر {total} استفسارًا.",
+    en: "What investors intend to build or operate on the land, across {total} inquiries.",
+  },
+  intendedUseByCategory: {
+    ar: "حسب طبيعة الاستخدام",
+    en: "By type of use",
+  },
+  intendedUseByUse: {
+    ar: "حسب الغرض المحدد",
+    en: "By specific purpose",
+  },
+  // Only printed when the data actually supports it — see
+  // isBusinessUseDominant in src/lib/analytics.ts.
+  intendedUseTakeawayBusiness: {
+    ar: "أغلب الطلب تجاري ({count} من {total}) — مستودعات ومعارض ومكاتب، لا سكني.",
+    en: "Most demand is commercial ({count} of {total}) — warehouses, showrooms and offices, not residential.",
+  },
+  // The honest fallback when no category dominates: name the leader
+  // instead of asserting a story the numbers don't tell.
+  intendedUseTakeawayLeading: {
+    ar: "أكبر شريحة من الطلب: {category} ({count} من {total}).",
+    en: "The largest share of demand: {category} ({count} of {total}).",
+  },
   // Investor-facing price context on a parcel's detail page. The wording
   // is deliberately explicit that the benchmark is SARJ'S OWN PORTFOLIO —
   // the app has no external market data, and implying otherwise would be
@@ -965,6 +995,30 @@ export const inquiryStatusLabels: Record<InquiryStatus, Record<Language, string>
   new: { ar: "جديد", en: "New" },
   contacted: { ar: "تم التواصل", en: "Contacted" },
   negotiating: { ar: "قيد التفاوض", en: "Negotiating" },
+};
+
+// Arabic for each `wants_to` value in the 48 inquiries. Keyed by the raw
+// English string the data stores, since that IS the value — there is no
+// code or enum behind it. Deliberately a plain Record<string, …> rather
+// than a Record over a union: wants_to is free text, so a value that
+// isn't listed here must still render (the caller falls back to the raw
+// string) rather than crash or show a blank row.
+export const intendedUseLabels: Record<string, Record<Language, string>> = {
+  "open a warehouse": { ar: "مستودع", en: "Warehouse" },
+  "build a residential compound": { ar: "مجمع سكني", en: "Residential compound" },
+  "open a car showroom": { ar: "معرض سيارات", en: "Car showroom" },
+  "build a family home": { ar: "بناء بيت العائلة", en: "Family home" },
+  "build apartments to rent": { ar: "شقق للإيجار", en: "Apartments to rent" },
+  "open an office building": { ar: "مبنى مكاتب", en: "Office building" },
+  "open a retail store": { ar: "محل تجاري", en: "Retail store" },
+  "open a showroom": { ar: "معرض", en: "Showroom" },
+  "build villas to sell": { ar: "فلل للبيع", en: "Villas to sell" },
+};
+
+export const useCategoryLabels: Record<UseCategory, Record<Language, string>> = {
+  business: { ar: "استخدام تجاري", en: "Commercial use" },
+  development: { ar: "تطوير عقاري", en: "Property development" },
+  personal: { ar: "استخدام شخصي", en: "Personal use" },
 };
 
 export const intentLabels: Record<Intent, Record<Language, string>> = {

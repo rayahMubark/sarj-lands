@@ -55,6 +55,15 @@ export type LeaseParcel = ParcelBase & {
 
 export type Parcel = SaleParcel | LeaseParcel;
 
+// How an inquiry's free-text `wants_to` is grouped for the admin
+// dashboard's intended-use analysis: running a business on the land,
+// developing it to sell/let, or building on it to live in. The mapping
+// from each wants_to value to one of these lives in src/lib/analytics.ts,
+// where the reasoning behind the grouping is documented; the type sits
+// here with the other shared domain types so both analytics and i18n can
+// name it without importing each other.
+export type UseCategory = "business" | "development" | "personal";
+
 export type BudgetBasis = "total purchase" | "annual rent";
 export type Intent = "ready to move" | "comparing options" | "exploring";
 // "sanad" added for Part B: leads captured through the Sanad chat, on top
