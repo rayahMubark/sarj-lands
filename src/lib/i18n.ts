@@ -712,6 +712,38 @@ export const dictionary = {
     ar: "{value} مليون ريال/سنة طلب",
     en: "{value}M SAR/year demand",
   },
+  // Investor-facing price context on a parcel's detail page. The wording
+  // is deliberately explicit that the benchmark is SARJ'S OWN PORTFOLIO —
+  // the app has no external market data, and implying otherwise would be
+  // a claim it can't support. The sample size is shown for the same
+  // reason: the reader can see how much the comparison is worth.
+  priceVsAverageBelow: {
+    ar: "أقل من متوسط المنطقة بـ {percent}%",
+    en: "{percent}% below the area average",
+  },
+  priceVsAverageAbove: {
+    ar: "أعلى من متوسط المنطقة بـ {percent}%",
+    en: "{percent}% above the area average",
+  },
+  // Exactly at the average once rounded — saying "0% below" would be odd.
+  priceVsAverageLevel: {
+    ar: "في مستوى متوسط المنطقة",
+    en: "In line with the area average",
+  },
+  // Arabic counts its nouns differently by size, and getting it wrong is
+  // immediately visible to a native reader: 3-10 takes the PLURAL ("4 قطع"),
+  // 11 and up the singular ("26 قطعة"). Two real sentences rather than a
+  // general pluralization engine, matching the "...Singular" convention
+  // the top-gap counts already use above. English needs no such split —
+  // the sample is never below 4, so "parcels" is always right.
+  priceVsAverageBasisFew: {
+    ar: "مقارنةً بمتوسط {landType} · {area} في محفظة سرج ({count} قطع مماثلة)",
+    en: "vs. Sarj's own average for {landType} · {area} ({count} comparable parcels)",
+  },
+  priceVsAverageBasisMany: {
+    ar: "مقارنةً بمتوسط {landType} · {area} في محفظة سرج ({count} قطعة مماثلة)",
+    en: "vs. Sarj's own average for {landType} · {area} ({count} comparable parcels)",
+  },
   // The explorable demand gap: clicking a segment reveals the real
   // investors behind it, turning a count into a call list.
   gapViewInvestors: {

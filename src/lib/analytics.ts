@@ -1,4 +1,4 @@
-import { parcels, inquiries, getAvailableParcels } from "./data";
+import { parcels, inquiries, getAvailableParcels, getParcelById } from "./data";
 import type {
   Parcel,
   Inquiry,
@@ -452,6 +452,62 @@ function buildPeerPriceBenchmark(parcel: Parcel): PeerPriceBenchmark {
     districtPeerAvgPricePerSqmSar: district?.avgPricePerSqmSar ?? null,
     districtPeerMedianPricePerSqmSar: district?.medianPricePerSqmSar ?? null,
     districtReliable: (district?.sampleSize ?? 0) >= MIN_RELIABLE_PEER_SAMPLE_SIZE,
+  };
+}
+
+// How one parcel's price_per_sqm_sar sits against its segment PEERS —
+// the investor-facing read of the same benchmark admin-Sanad prices
+// against (buildPeerPriceBenchmark below). percentDelta is signed
+// relative to the peer average: negative means this parcel is cheaper
+// per sqm than its peers, which is the reading a buyer cares about.
+export interface SegmentPriceComparison {
+  peerAvgPricePerSqmSar: number;
+  peerSampleSize: number; // OTHER parcels behind the average, never including this one
+  percentDelta: number; // e.g. -12 -> 12% below the peer average
+}
+
+// The comparison to show an investor on a parcel's detail page, or null
+// when there is nothing honest to say. Deliberately composed from
+// buildPeerPriceBenchmark rather than any new matching: the segment key
+// (area_of_city + land_type + listing_type) and the self-exclusion are
+// already correct there, which also means a lease parcel is only ever
+// compared against lease prices and a sale parcel against sale prices.
+//
+// Returns null — and the UI then shows no comparison at all — when:
+//  - the parcel_id isn't in the portfolio, or its price is unknown
+//    (SRE-013's priceOnRequest: there is no figure to compare);
+//  - the segment has fewer than MIN_RELIABLE_PEER_SAMPLE_SIZE OTHER
+//    priced parcels. A "12% below average" computed against one or two
+//    comparables is noise dressed as precision, and stating it to a buyer
+//    about to spend millions is worse than staying quiet. This is the
+//    same gate admin-Sanad's pricing advice runs (see its RELIABILITY
+//    GATE rule) — an investor gets no weaker a standard than leadership.
+//    With this portfolio that still covers 55 of the 61 priced available
+//    parcels; the remaining few simply show their price with no claim
+//    attached.
+export function segmentPriceComparison(
+  parcelId: string
+): SegmentPriceComparison | null {
+  const parcel = getParcelById(parcelId);
+  if (!parcel || parcel.priceOnRequest) return null;
+
+  const benchmark = buildPeerPriceBenchmark(parcel);
+  if (!benchmark.segmentReliable) return null;
+
+  const peerAvgPricePerSqmSar = benchmark.segmentPeerAvgPricePerSqmSar;
+  // segmentReliable already implies a real sample, so the average is
+  // non-null; the guard keeps that an assertion rather than an assumption,
+  // and rules out a divide-by-zero on a nonsensical 0 average.
+  if (peerAvgPricePerSqmSar === null || peerAvgPricePerSqmSar === 0) return null;
+
+  const ownPricePerSqmSar = parcel.price_per_sqm_sar;
+
+  return {
+    peerAvgPricePerSqmSar,
+    peerSampleSize: benchmark.segmentPeerSampleSize,
+    percentDelta: Math.round(
+      ((ownPricePerSqmSar - peerAvgPricePerSqmSar) / peerAvgPricePerSqmSar) * 100
+    ),
   };
 }
 

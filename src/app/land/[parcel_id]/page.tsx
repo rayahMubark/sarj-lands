@@ -5,12 +5,14 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { formatDate, formatNumber, formatTemplate } from "@/lib/format";
 import {
+  areaOfCityCompoundLabels,
   landTypeLabels,
   listingTypeLabels,
   statusLabels,
   useLanguage,
 } from "@/lib/i18n";
 import { getParcelById } from "@/lib/data";
+import { segmentPriceComparison } from "@/lib/analytics";
 import { useSanad } from "@/lib/sanad";
 import {
   ParcelVisual,
@@ -188,7 +190,91 @@ function PriceSection({ parcel }: { parcel: Parcel }) {
     <div className="flex flex-col gap-2 rounded-2xl border border-hairline p-6">
       <span className="section-label">{t("priceSectionLabel")}</span>
       <PriceBlock parcel={parcel} t={t} />
+      <PriceContext parcel={parcel} />
     </div>
+  );
+}
+
+// How this parcel's price per sqm sits against comparable Sarj land —
+// the one piece of context that turns a number an investor can't judge
+// ("10,525 SAR/sqm") into one they can. Sits directly under the price it
+// describes.
+//
+// All of the judgement lives in segmentPriceComparison (src/lib/
+// analytics.ts), which reuses the same peer-benchmark engine the admin
+// dashboard prices against: the parcel is excluded from its own average,
+// sale is never compared against lease, and a segment with too few real
+// comparables returns null. Null means this renders NOTHING — a parcel
+// with a thin peer sample, or SRE-013 whose price is unknown, simply
+// shows its price with no claim attached, rather than a hedged sentence
+// the reader has to decode.
+function PriceContext({ parcel }: { parcel: Parcel }) {
+  const { language, t } = useLanguage();
+  const comparison = segmentPriceComparison(parcel.parcel_id);
+  if (!comparison) return null;
+
+  // Cheaper than its peers is the reading that helps a buyer, so it takes
+  // the brand's positive teal; above average is stated just as plainly in
+  // amber rather than hidden — the point is confidence through honesty,
+  // not flattery. Both are existing status tokens, not new colors.
+  const isBelow = comparison.percentDelta < 0;
+  const isLevel = comparison.percentDelta === 0;
+  const toneColor = isLevel
+    ? "var(--muted)"
+    : isBelow
+      ? "var(--status-leased)"
+      : "var(--status-reserved)";
+
+  const headlineKey = isLevel
+    ? "priceVsAverageLevel"
+    : isBelow
+      ? "priceVsAverageBelow"
+      : "priceVsAverageAbove";
+
+  return (
+    <div className="mt-2 flex flex-col gap-1.5 border-t border-hairline pt-3">
+      <span
+        className="inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold"
+        style={{ backgroundColor: `${toneColor}1f`, color: toneColor }}
+      >
+        {!isLevel && <TrendArrow pointsDown={isBelow} />}
+        {formatTemplate(t(headlineKey), {
+          // Math.abs: the direction is already carried by the wording and
+          // the arrow, so the figure itself reads as a magnitude.
+          percent: formatNumber(Math.abs(comparison.percentDelta)),
+        })}
+      </span>
+      <p className="text-xs text-muted">
+        {/* Arabic's 3-10 vs 11+ counted-noun forms — see the two basis
+            keys in src/lib/i18n.ts. The sample is never below 4 here
+            (MIN_RELIABLE_PEER_SAMPLE_SIZE), so only these two apply. */}
+        {formatTemplate(t(comparison.peerSampleSize <= 10 ? "priceVsAverageBasisFew" : "priceVsAverageBasisMany"), {
+          landType: landTypeLabels[parcel.land_type][language],
+          area: areaOfCityCompoundLabels[parcel.area_of_city][language],
+          count: formatNumber(comparison.peerSampleSize),
+        })}
+      </p>
+    </div>
+  );
+}
+
+// Direction cue beside the percentage. aria-hidden because the sentence
+// next to it already says "below"/"above" — the arrow is decoration, and
+// announcing it would just repeat the words.
+function TrendArrow({ pointsDown }: { pointsDown: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`h-3 w-3 shrink-0 ${pointsDown ? "" : "rotate-180"}`}
+    >
+      <path d="M6 2v8M3 7l3 3 3-3" />
+    </svg>
   );
 }
 
