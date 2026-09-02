@@ -21,6 +21,15 @@ const ADMIN_TABS: AdminTabDef[] = [
 // for the active underline, the browser's own dir-aware row ordering) —
 // no manual RTL branching needed, the same convention the rest of the
 // app relies on via dir="rtl"/"ltr" on <html>.
+//
+// The row WRAPS rather than scrolling horizontally: the four Arabic
+// labels total roughly 435px, wider than a 390px phone's ~342px of
+// content width, so a single row necessarily cut the last tab
+// ("حالة الطلبات") off mid-word — and a clipped label a reader has to
+// discover by swiping is worse than a second row they can just see.
+// Wrapping costs nothing above mobile, where all four fit on one line
+// anyway and the wrap never triggers. Mobile also gets tighter
+// horizontal padding (px-3) to keep the wrapped rows compact.
 export function AdminTabNav({
   active,
   onChange,
@@ -33,7 +42,7 @@ export function AdminTabNav({
   const { t } = useLanguage();
 
   return (
-    <nav role="tablist" className="flex gap-1 overflow-x-auto border-b border-hairline">
+    <nav role="tablist" className="flex flex-wrap gap-1 border-b border-hairline">
       {ADMIN_TABS.map((tab) => {
         const isActive = tab.id === active;
         const badgeCount = tab.id === "requests" ? requestsBadgeCount : 0;
@@ -45,7 +54,7 @@ export function AdminTabNav({
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(tab.id)}
-            className={`relative flex shrink-0 items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
+            className={`relative flex items-center gap-2 px-3 py-3 text-sm font-medium transition-colors sm:px-4 ${
               isActive ? "text-primary" : "text-muted hover:text-foreground"
             }`}
           >

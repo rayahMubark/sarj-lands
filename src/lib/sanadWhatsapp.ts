@@ -1,9 +1,10 @@
 import type { SanadInquiryRecord } from "./types";
 
-// PLACEHOLDER — replace with Sarj's real WhatsApp Business number before
-// launch. Kept as a single named constant, same reasoning as
-// GEMINI_MODEL in src/app/api/sanad/route.ts.
-const SARJ_WHATSAPP_NUMBER = "966500000000";
+// Sarj's WhatsApp contact, in wa.me's required international format:
+// country code + national number, no "+", no spaces, and no leading 0
+// (local 0567080494 -> 966567080494). Kept as a single named constant,
+// same reasoning as GEMINI_MODEL in src/app/api/sanad/route.ts.
+const SARJ_WHATSAPP_NUMBER = "966567080494";
 
 // The optional handoff offered after a successful registration: a wa.me
 // link pre-filled with a bilingual message naming the investor, the

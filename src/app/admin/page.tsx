@@ -47,7 +47,14 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTabId>("overview");
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-10">
+    // pb-28: Sanad's launcher is fixed to the bottom corner (see SanadFab
+    // in src/components/SanadPanel.tsx, bottom-4 + ~41px tall) and was
+    // sitting on top of the last KPI card on a phone, where the grid runs
+    // all the way to the container's edge. Reserving that strip below the
+    // content keeps the FAB over empty space instead of over a figure.
+    // sm:pb-10 restores the normal footer gap once the wider layout puts
+    // the launcher clear of the content anyway.
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 pt-10 pb-28 sm:pb-10">
       <AdminHeader />
       <AdminTabNav
         active={activeTab}
