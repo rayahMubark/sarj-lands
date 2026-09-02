@@ -2,6 +2,7 @@ import { parcels, inquiries, getAvailableParcels } from "./data";
 import type {
   Parcel,
   Inquiry,
+  Intent,
   AreaOfCity,
   LandType,
   ListingType,
@@ -120,6 +121,12 @@ export interface UnmetSegment {
   // are only ever added together by a caller that keeps them apart — see
   // DemandVsSupply's two separate totals below.
   budgetSar: number;
+  // The actual unmet inquiries behind `count` — the same Inquiry records
+  // from the 48, carried out of the matching pass rather than looked up
+  // again afterwards, so a segment's investor list can never drift from
+  // the count and budget printed beside it. Unsorted here; presentation
+  // order is the caller's business (see sortInvestorsByPriority).
+  investors: Inquiry[];
 }
 
 export interface DemandVsSupply {
@@ -203,6 +210,7 @@ export function demandVsSupply(): DemandVsSupply {
     if (existing) {
       existing.count++;
       existing.budgetSar += inquiry.budget_sar;
+      existing.investors.push(inquiry);
     } else {
       unmetSegmentCounts.set(key, {
         area_of_city: inquiry.area_of_city_wanted,
@@ -210,6 +218,7 @@ export function demandVsSupply(): DemandVsSupply {
         listing_type: inquiry.prefers,
         count: 1,
         budgetSar: inquiry.budget_sar,
+        investors: [inquiry],
       });
     }
   }
@@ -235,6 +244,37 @@ export function demandVsSupply(): DemandVsSupply {
     readyToMoveUnserved,
     readyToMoveTotal,
   };
+}
+
+// How urgent each intent is, for ordering a gap's investor list: the
+// people who said they're ready to move are the ones worth calling first,
+// and "exploring" trails. Lower rank sorts earlier.
+const INTENT_PRIORITY: Record<Intent, number> = {
+  "ready to move": 0,
+  "comparing options": 1,
+  exploring: 2,
+};
+
+// A gap's investors as a call list: readiness first, then the largest
+// budget within each readiness band. Returns a new array — callers pass
+// segment.investors straight in, and mutating that would reorder the
+// analytics result itself.
+//
+// A caveat worth stating plainly: the dashboard groups gaps by area+land
+// type, which can hold BOTH sale and lease seekers, so the budgets tied
+// here are not always the same basis — a purchase total may sort above an
+// annual rent that is, in its own terms, the bigger commitment. That is
+// tolerable only because this is call ORDER, not a value comparison: no
+// figure is summed or ranked against another in the UI, and every card
+// prints its own basis ("total purchase" / "annual rent"), so a reader is
+// never shown the two as though they were one scale. The money totals
+// beside the list stay strictly separated, as everywhere else.
+export function sortInvestorsByPriority(investors: Inquiry[]): Inquiry[] {
+  return [...investors].sort(
+    (a, b) =>
+      INTENT_PRIORITY[a.intent] - INTENT_PRIORITY[b.intent] ||
+      b.budget_sar - a.budget_sar
+  );
 }
 
 // A reasonable minimum sample size before an average/median is worth

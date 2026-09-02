@@ -712,6 +712,45 @@ export const dictionary = {
     ar: "{value} مليون ريال/سنة طلب",
     en: "{value}M SAR/year demand",
   },
+  // The explorable demand gap: clicking a segment reveals the real
+  // investors behind it, turning a count into a call list.
+  gapViewInvestors: {
+    ar: "عرض المستثمرين",
+    en: "View investors",
+  },
+  gapHideInvestors: {
+    ar: "إخفاء المستثمرين",
+    en: "Hide investors",
+  },
+  // The opportunity framing at the top of an opened gap — the count and
+  // the money already appear as chips, so this line adds the readiness
+  // that makes it a sales pitch rather than a complaint.
+  gapReadyToBuyNow: {
+    ar: "{count} جاهز للشراء الآن",
+    en: "{count} ready to buy now",
+  },
+  gapInvestorListTitle: {
+    ar: "المستثمرون في هذه الفجوة",
+    en: "Investors in this gap",
+  },
+  // Each investor card's fields. Budget carries its own basis label so a
+  // one-off purchase total is never mistaken for a yearly rent.
+  gapInvestorWants: {
+    ar: "الغرض",
+    en: "Purpose",
+  },
+  gapInvestorBudgetTotal: {
+    ar: "{value} ريال (إجمالي الشراء)",
+    en: "{value} SAR (total purchase)",
+  },
+  gapInvestorBudgetAnnual: {
+    ar: "{value} ريال/سنة (إيجار سنوي)",
+    en: "{value} SAR/year (annual rent)",
+  },
+  gapInvestorWhatsApp: {
+    ar: "مراسلة عبر واتساب",
+    en: "Message on WhatsApp",
+  },
   topGapEyebrow: {
     ar: "أكبر فجوة في الطلب",
     en: "Biggest demand gap",
